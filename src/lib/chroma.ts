@@ -1,4 +1,5 @@
 import { CloudClient } from "chromadb";
+import { DefaultEmbeddingFunction } from "@chroma-core/default-embed";
 
 const client = new CloudClient({
   apiKey: 'ck-3BBnoH2aHP4TMK8XGehjrXQ1h8efT4CWBekqH5CVcoJo',
@@ -89,10 +90,14 @@ export const SAMPLE_DOCUMENTS = [
 
 export async function initializeChromaCollection() {
   try {
-    // Create or get collection
+    // Create embedding function
+    const embeddingFunction = new DefaultEmbeddingFunction();
+    
+    // Create or get collection with embedding function
     const collection = await client.getOrCreateCollection({
       name: "nutrition_health_docs",
-      metadata: { description: "Nutrition and health documents for RAG chatbot" }
+      metadata: { description: "Nutrition and health documents for RAG chatbot" },
+      embeddingFunction: embeddingFunction
     });
 
     // Check if collection is empty

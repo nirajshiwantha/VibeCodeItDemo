@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { initializeChromaCollection, searchDocuments } from '@/lib/chroma';
-import { generateResponse, ChatMessage } from '@/lib/llm';
+import { generateResponseTogetherAI, ChatMessage } from '@/lib/llm';
 
 export async function POST(req: NextRequest) {
   try {
@@ -33,8 +33,8 @@ export async function POST(req: NextRequest) {
       { role: 'user', content: message }
     ];
 
-    // Generate response using LLM
-    const response = await generateResponse(messages, context);
+    // Generate response using Together.ai LLM
+    const response = await generateResponseTogetherAI(messages, context);
 
     return NextResponse.json({
       response,
