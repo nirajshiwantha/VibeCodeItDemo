@@ -6,6 +6,7 @@ import { useState, useEffect, useTransition } from "react"
 import { getUserProfile, updateUserProfile } from "./actions"
 import Image from "next/image"
 import { getUserOpenAiKey, updateUserOpenAiKey } from "./actions"
+import { motion, AnimatePresence } from "framer-motion"
 
 interface UserProfile {
   id: string
@@ -18,6 +19,16 @@ interface UserProfile {
   weightKg: number | null
   activityLevel: string | null
 }
+
+const UNSPLASH_BANNER = "https://images.unsplash.com/photo-1506744038136-46273834b3fb?auto=format&fit=crop&w=1200&q=80"
+const MOTIVATION_QUOTES = [
+  "Every healthy choice is a victory.",
+  "Small steps every day lead to big results.",
+  "Your body deserves the best.",
+  "Eat well, live well.",
+  "Wellness is the natural state of my body."
+]
+const randomQuote = MOTIVATION_QUOTES[Math.floor(Math.random() * MOTIVATION_QUOTES.length)]
 
 export default function ProfilePage() {
   const { data: session, status } = useSession()
@@ -119,29 +130,48 @@ export default function ProfilePage() {
 
   return (
     <main className="max-w-4xl mx-auto py-12 px-4 flex flex-col gap-8">
+      {/* Unsplash Banner */}
+      <div className="relative h-48 w-full rounded-xl overflow-hidden mb-8">
+        <Image src={UNSPLASH_BANNER} alt="Profile Banner" fill priority />
+        <div className="absolute inset-0 bg-black/30" />
+      </div>
       <div className="flex justify-between items-center">
         <h1 className="text-3xl font-bold">My Profile</h1>
-        <Button 
-          variant={isEditing ? "default" : "outline"} 
-          onClick={() => isEditing ? handleSave() : setIsEditing(true)}
-          disabled={isPending}
-        >
-          {isPending ? "Saving..." : isEditing ? "Save Changes" : "Edit Profile"}
-        </Button>
+        <motion.div whileHover={{ scale: 1.08 }} whileTap={{ scale: 0.95 }}>
+          <Button 
+            variant={isEditing ? "default" : "outline"} 
+            onClick={() => isEditing ? handleSave() : setIsEditing(true)}
+            disabled={isPending}
+            className="transition-all duration-200"
+          >
+            {isPending ? "Saving..." : isEditing ? "Save Changes" : "Edit Profile"}
+          </Button>
+        </motion.div>
       </div>
-
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
         {/* Profile Card */}
-        <div className="lg:col-span-1">
-          <div className="bg-muted rounded-lg p-6 text-center">
-            <div className="mb-4">
+        <motion.div
+          className="lg:col-span-1"
+          initial={{ opacity: 0, y: 40 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.7 }}
+        >
+          <div className="bg-muted rounded-lg p-6 text-center shadow-xl">
+            <motion.div
+              className="mb-4"
+              initial={{ scale: 0.8, opacity: 0 }}
+              animate={{ scale: 1, opacity: 1 }}
+              transition={{ duration: 0.7, delay: 0.2 }}
+              whileHover={{ scale: 1.05 }}
+            >
               {profile?.image ? (
                 <Image
                   src={profile.image}
                   alt="Profile"
                   width={120}
                   height={120}
-                  className="rounded-full mx-auto border-4 border-background shadow-lg"
+                  className="rounded-full mx-auto border-4 border-background shadow-lg transition-all duration-300 hover:shadow-2xl"
+                  priority
                 />
               ) : (
                 <div className="w-30 h-30 rounded-full bg-primary/10 flex items-center justify-center mx-auto">
@@ -150,137 +180,160 @@ export default function ProfilePage() {
                   </span>
                 </div>
               )}
-            </div>
+            </motion.div>
             <h2 className="text-2xl font-bold mb-2">{profile?.name}</h2>
             <p className="text-muted-foreground mb-4">{profile?.email}</p>
-            
             {/* BMI Card */}
-            {bmi && bmiData && (
-              <div className="bg-background rounded-lg p-4 mt-4">
-                <h3 className="font-semibold mb-2">Body Mass Index</h3>
-                <div className="text-3xl font-bold mb-1">{bmi}</div>
-                <div className={`text-sm font-medium ${bmiData.color}`}>
-                  {bmiData.category}
-                </div>
-              </div>
-            )}
+            <AnimatePresence>
+              {bmi && bmiData && (
+                <motion.div
+                  className="bg-background rounded-lg p-4 mt-4"
+                  initial={{ opacity: 0, scale: 0.9 }}
+                  animate={{ opacity: 1, scale: 1 }}
+                  exit={{ opacity: 0, scale: 0.9 }}
+                  transition={{ duration: 0.5 }}
+                >
+                  <h3 className="font-semibold mb-2">Body Mass Index</h3>
+                  <div className="text-3xl font-bold mb-1">{bmi}</div>
+                  <div className={`text-sm font-medium ${bmiData.color}`}>{bmiData.category}</div>
+                </motion.div>
+              )}
+            </AnimatePresence>
           </div>
-        </div>
-
+        </motion.div>
         {/* Profile Details */}
-        <div className="lg:col-span-2">
-          <div className="bg-muted rounded-lg p-6">
+        <motion.div
+          className="lg:col-span-2"
+          initial={{ opacity: 0, y: 40 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.7, delay: 0.15 }}
+        >
+          <div className="bg-muted rounded-lg p-6 shadow-xl">
             <h3 className="text-xl font-semibold mb-6">Personal Information</h3>
-            
-            {isEditing ? (
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                <div>
-                  <label className="block text-sm font-medium mb-2">Age</label>
-                  <Input 
-                    type="number" 
-                    value={formData.age} 
-                    onChange={e => setFormData({...formData, age: e.target.value})}
-                    placeholder="Enter your age"
-                    min="1"
-                    max="120"
-                  />
-                </div>
-                
-                <div>
-                  <label className="block text-sm font-medium mb-2">Gender</label>
-                  <select 
-                    className="w-full p-2 border rounded-md bg-background"
-                    value={formData.gender}
-                    onChange={e => setFormData({...formData, gender: e.target.value})}
-                  >
-                    <option value="">Select gender</option>
-                    <option value="male">Male</option>
-                    <option value="female">Female</option>
-                    <option value="other">Other</option>
-                    <option value="prefer-not-to-say">Prefer not to say</option>
-                  </select>
-                </div>
-                
-                <div>
-                  <label className="block text-sm font-medium mb-2">Height (cm)</label>
-                  <Input 
-                    type="number" 
-                    value={formData.heightCm} 
-                    onChange={e => setFormData({...formData, heightCm: e.target.value})}
-                    placeholder="Enter height in cm"
-                    min="50"
-                    max="300"
-                  />
-                </div>
-                
-                <div>
-                  <label className="block text-sm font-medium mb-2">Weight (kg)</label>
-                  <Input 
-                    type="number" 
-                    value={formData.weightKg} 
-                    onChange={e => setFormData({...formData, weightKg: e.target.value})}
-                    placeholder="Enter weight in kg"
-                    min="20"
-                    max="500"
-                    step="0.1"
-                  />
-                </div>
-                
-                <div className="md:col-span-2">
-                  <label className="block text-sm font-medium mb-2">Activity Level</label>
-                  <select 
-                    className="w-full p-2 border rounded-md bg-background"
-                    value={formData.activityLevel}
-                    onChange={e => setFormData({...formData, activityLevel: e.target.value})}
-                  >
-                    <option value="">Select activity level</option>
-                    <option value="sedentary">Sedentary (little/no exercise)</option>
-                    <option value="light">Light (light exercise 1-3 days/week)</option>
-                    <option value="moderate">Moderate (moderate exercise 3-5 days/week)</option>
-                    <option value="active">Active (hard exercise 6-7 days/week)</option>
-                    <option value="very_active">Very Active (very hard exercise, physical job)</option>
-                  </select>
-                </div>
-              </div>
-            ) : (
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                <div className="space-y-4">
+            <AnimatePresence mode="wait">
+              {isEditing ? (
+                <motion.div
+                  key="edit"
+                  initial={{ opacity: 0, x: 40 }}
+                  animate={{ opacity: 1, x: 0 }}
+                  exit={{ opacity: 0, x: -40 }}
+                  transition={{ duration: 0.4 }}
+                  className="grid grid-cols-1 md:grid-cols-2 gap-6"
+                >
                   <div>
-                    <label className="text-sm font-medium text-muted-foreground">Age</label>
-                    <div className="text-lg">{profile?.age || "Not set"}</div>
+                    <label className="block text-sm font-medium mb-2">Age</label>
+                    <Input 
+                      type="number" 
+                      value={formData.age} 
+                      onChange={e => setFormData({...formData, age: e.target.value})}
+                      placeholder="Enter your age"
+                      min="1"
+                      max="120"
+                    />
                   </div>
                   
                   <div>
-                    <label className="text-sm font-medium text-muted-foreground">Gender</label>
-                    <div className="text-lg capitalize">{profile?.gender || "Not set"}</div>
+                    <label className="block text-sm font-medium mb-2">Gender</label>
+                    <select 
+                      className="w-full p-2 border rounded-md bg-background"
+                      value={formData.gender}
+                      onChange={e => setFormData({...formData, gender: e.target.value})}
+                    >
+                      <option value="">Select gender</option>
+                      <option value="male">Male</option>
+                      <option value="female">Female</option>
+                      <option value="other">Other</option>
+                      <option value="prefer-not-to-say">Prefer not to say</option>
+                    </select>
                   </div>
                   
                   <div>
-                    <label className="text-sm font-medium text-muted-foreground">Activity Level</label>
-                    <div className="text-lg capitalize">
-                      {profile?.activityLevel?.replace('_', ' ') || "Not set"}
-                    </div>
-                  </div>
-                </div>
-                
-                <div className="space-y-4">
-                  <div>
-                    <label className="text-sm font-medium text-muted-foreground">Height</label>
-                    <div className="text-lg">
-                      {profile?.heightCm ? `${profile.heightCm} cm` : "Not set"}
-                    </div>
+                    <label className="block text-sm font-medium mb-2">Height (cm)</label>
+                    <Input 
+                      type="number" 
+                      value={formData.heightCm} 
+                      onChange={e => setFormData({...formData, heightCm: e.target.value})}
+                      placeholder="Enter height in cm"
+                      min="50"
+                      max="300"
+                    />
                   </div>
                   
                   <div>
-                    <label className="text-sm font-medium text-muted-foreground">Weight</label>
-                    <div className="text-lg">
-                      {profile?.weightKg ? `${profile.weightKg} kg` : "Not set"}
+                    <label className="block text-sm font-medium mb-2">Weight (kg)</label>
+                    <Input 
+                      type="number" 
+                      value={formData.weightKg} 
+                      onChange={e => setFormData({...formData, weightKg: e.target.value})}
+                      placeholder="Enter weight in kg"
+                      min="20"
+                      max="500"
+                      step="0.1"
+                    />
+                  </div>
+                  
+                  <div className="md:col-span-2">
+                    <label className="block text-sm font-medium mb-2">Activity Level</label>
+                    <select 
+                      className="w-full p-2 border rounded-md bg-background"
+                      value={formData.activityLevel}
+                      onChange={e => setFormData({...formData, activityLevel: e.target.value})}
+                    >
+                      <option value="">Select activity level</option>
+                      <option value="sedentary">Sedentary (little/no exercise)</option>
+                      <option value="light">Light (light exercise 1-3 days/week)</option>
+                      <option value="moderate">Moderate (moderate exercise 3-5 days/week)</option>
+                      <option value="active">Active (hard exercise 6-7 days/week)</option>
+                      <option value="very_active">Very Active (very hard exercise, physical job)</option>
+                    </select>
+                  </div>
+                </motion.div>
+              ) : (
+                <motion.div
+                  key="view"
+                  initial={{ opacity: 0, x: -40 }}
+                  animate={{ opacity: 1, x: 0 }}
+                  exit={{ opacity: 0, x: 40 }}
+                  transition={{ duration: 0.4 }}
+                  className="grid grid-cols-1 md:grid-cols-2 gap-6"
+                >
+                  <div className="space-y-4">
+                    <div>
+                      <label className="text-sm font-medium text-muted-foreground">Age</label>
+                      <div className="text-lg">{profile?.age || "Not set"}</div>
+                    </div>
+                    
+                    <div>
+                      <label className="text-sm font-medium text-muted-foreground">Gender</label>
+                      <div className="text-lg capitalize">{profile?.gender || "Not set"}</div>
+                    </div>
+                    
+                    <div>
+                      <label className="text-sm font-medium text-muted-foreground">Activity Level</label>
+                      <div className="text-lg capitalize">
+                        {profile?.activityLevel?.replace('_', ' ') || "Not set"}
+                      </div>
                     </div>
                   </div>
-                </div>
-              </div>
-            )}
-
+                  
+                  <div className="space-y-4">
+                    <div>
+                      <label className="text-sm font-medium text-muted-foreground">Height</label>
+                      <div className="text-lg">
+                        {profile?.heightCm ? `${profile.heightCm} cm` : "Not set"}
+                      </div>
+                    </div>
+                    
+                    <div>
+                      <label className="text-sm font-medium text-muted-foreground">Weight</label>
+                      <div className="text-lg">
+                        {profile?.weightKg ? `${profile.weightKg} kg` : "Not set"}
+                      </div>
+                    </div>
+                  </div>
+                </motion.div>
+              )}
+            </AnimatePresence>
             {isEditing && (
               <div className="flex gap-3 mt-6 pt-6 border-t">
                 <Button onClick={handleSave} disabled={isPending}>
@@ -305,12 +358,16 @@ export default function ProfilePage() {
               </div>
             )}
           </div>
-        </div>
+        </motion.div>
       </div>
-
       {/* Health Stats */}
       {profile?.heightCm && profile?.weightKg && (
-        <div className="bg-muted rounded-lg p-6">
+        <motion.div
+          className="bg-muted rounded-lg p-6"
+          initial={{ opacity: 0, y: 40 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.7, delay: 0.2 }}
+        >
           <h3 className="text-xl font-semibold mb-4">Health Statistics</h3>
           <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
             <div className="bg-background rounded-lg p-4 text-center">
@@ -336,7 +393,7 @@ export default function ProfilePage() {
               <div className="text-sm text-muted-foreground">Current Weight (kg)</div>
             </div>
           </div>
-        </div>
+        </motion.div>
       )}
       {/* OpenAI API Key */}
       <div className="bg-muted rounded-lg p-6 mt-8">
@@ -352,6 +409,13 @@ export default function ProfilePage() {
           />
           <Button onClick={handleSaveOpenAiKey}>Save</Button>
           {openAiKeySaved && <span className="text-green-600 ml-2">Saved!</span>}
+        </div>
+      </div>
+      {/* Motivational Quote */}
+      <div className="relative h-32 w-full rounded-xl overflow-hidden mt-8 flex items-center justify-center">
+        <Image src="https://images.unsplash.com/photo-1465101046530-73398c7f28ca?auto=format&fit=crop&w=800&q=80" alt="Motivation" fill />
+        <div className="absolute inset-0 bg-black/40 flex items-center justify-center">
+          <span className="text-white text-xl font-semibold drop-shadow-lg text-center px-4">{randomQuote}</span>
         </div>
       </div>
     </main>

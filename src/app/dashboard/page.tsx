@@ -3,6 +3,8 @@ import { useSession } from "next-auth/react"
 import { Button } from "@/components/ui/button"
 import Link from "next/link"
 import { useState } from "react"
+import { motion } from "framer-motion"
+import Image from "next/image"
 
 interface DashboardData {
   todayNutrition: {
@@ -31,6 +33,16 @@ interface DashboardData {
     time: string
   }>
 }
+
+const UNSPLASH_HERO = "https://images.unsplash.com/photo-1519864600265-abb23847ef2c?auto=format&fit=crop&w=1200&q=80"
+const MOTIVATION_QUOTES = [
+  "Consistency is the key to success.",
+  "Fuel your body, fuel your life.",
+  "Healthy habits, happy life.",
+  "Progress, not perfection.",
+  "You are what you eat, so don’t be fast, cheap, easy, or fake."
+]
+const randomQuote = MOTIVATION_QUOTES[Math.floor(Math.random() * MOTIVATION_QUOTES.length)]
 
 export default function DashboardPage() {
   const { data: session, status } = useSession()
@@ -77,6 +89,11 @@ export default function DashboardPage() {
 
   return (
     <main className="max-w-6xl mx-auto py-12 px-4 flex flex-col gap-8">
+      {/* Unsplash Hero Banner */}
+      <div className="relative h-48 w-full rounded-xl overflow-hidden mb-8">
+        <Image src={UNSPLASH_HERO} alt="Dashboard Hero" fill priority />
+        <div className="absolute inset-0 bg-black/30" />
+      </div>
       <div className="flex justify-between items-center">
         <div>
           <h1 className="text-3xl font-bold">Welcome back, {session.user?.name?.split(' ')[0] || 'User'}!</h1>
@@ -89,11 +106,11 @@ export default function DashboardPage() {
       </div>
 
       {/* Today's Nutrition Summary */}
-      <div className="bg-muted rounded-lg p-6">
+      <motion.div className="bg-muted rounded-lg p-6" initial={{ opacity: 0, y: 40 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.7 }}>
         <h2 className="text-xl font-semibold mb-4">Today's Nutrition</h2>
         <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
           {/* Calories */}
-          <div className="bg-background rounded-lg p-4">
+          <motion.div className="bg-background rounded-lg p-4" initial={{ opacity: 0, y: 30 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.1 }}>
             <div className="flex justify-between items-center mb-2">
               <span className="text-sm font-medium">Calories</span>
               <span className="text-xs text-muted-foreground">
@@ -101,19 +118,23 @@ export default function DashboardPage() {
               </span>
             </div>
             <div className="w-full bg-muted rounded-full h-2 mb-2">
-              <div 
-                className="bg-primary h-2 rounded-full transition-all duration-300" 
+              <motion.div
+                className="bg-primary h-2 rounded-full"
                 style={{ width: `${Math.min(calorieProgress, 100)}%` }}
+                initial={{ scaleX: 0 }}
+                animate={{ scaleX: 1 }}
+                transition={{ duration: 0.7 }}
+                style={{ originX: 0 }}
               />
             </div>
             <div className="text-2xl font-bold">{dashboardData.todayNutrition.calories}</div>
             <div className="text-xs text-muted-foreground">
               {dashboardData.todayNutrition.calorieGoal - dashboardData.todayNutrition.calories} remaining
             </div>
-          </div>
+          </motion.div>
 
           {/* Protein */}
-          <div className="bg-background rounded-lg p-4">
+          <motion.div className="bg-background rounded-lg p-4" initial={{ opacity: 0, y: 30 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.2 }}>
             <div className="flex justify-between items-center mb-2">
               <span className="text-sm font-medium">Protein</span>
               <span className="text-xs text-muted-foreground">
@@ -121,39 +142,43 @@ export default function DashboardPage() {
               </span>
             </div>
             <div className="w-full bg-muted rounded-full h-2 mb-2">
-              <div 
-                className="bg-green-500 h-2 rounded-full transition-all duration-300" 
+              <motion.div
+                className="bg-green-500 h-2 rounded-full"
                 style={{ width: `${Math.min(proteinProgress, 100)}%` }}
+                initial={{ scaleX: 0 }}
+                animate={{ scaleX: 1 }}
+                transition={{ duration: 0.7 }}
+                style={{ originX: 0 }}
               />
             </div>
             <div className="text-2xl font-bold">{dashboardData.todayNutrition.protein}g</div>
             <div className="text-xs text-muted-foreground">
               {Math.max(0, dashboardData.todayNutrition.proteinGoal - dashboardData.todayNutrition.protein)}g remaining
             </div>
-          </div>
+          </motion.div>
 
           {/* Carbs */}
-          <div className="bg-background rounded-lg p-4">
+          <motion.div className="bg-background rounded-lg p-4" initial={{ opacity: 0, y: 30 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.3 }}>
             <div className="flex justify-between items-center mb-2">
               <span className="text-sm font-medium">Carbohydrates</span>
             </div>
             <div className="text-2xl font-bold">{dashboardData.todayNutrition.carbs}g</div>
             <div className="text-xs text-muted-foreground">Complex carbs preferred</div>
-          </div>
+          </motion.div>
 
           {/* Fat */}
-          <div className="bg-background rounded-lg p-4">
+          <motion.div className="bg-background rounded-lg p-4" initial={{ opacity: 0, y: 30 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.4 }}>
             <div className="flex justify-between items-center mb-2">
               <span className="text-sm font-medium">Fat</span>
             </div>
             <div className="text-2xl font-bold">{dashboardData.todayNutrition.fat}g</div>
             <div className="text-xs text-muted-foreground">Healthy fats</div>
-          </div>
+          </motion.div>
         </div>
-      </div>
+      </motion.div>
 
       {/* Weekly Meal Plan Overview */}
-      <div className="bg-muted rounded-lg p-6">
+      <motion.div className="bg-muted rounded-lg p-6" initial={{ opacity: 0, y: 40 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.7, delay: 0.1 }}>
         <div className="flex justify-between items-center mb-4">
           <h2 className="text-xl font-semibold">This Week's Meal Plan</h2>
           <Link href="/meals">
@@ -162,7 +187,7 @@ export default function DashboardPage() {
         </div>
         <div className="grid grid-cols-1 md:grid-cols-7 gap-4">
           {dashboardData.weeklyMeals.map((day, index) => (
-            <div key={index} className="bg-background rounded-lg p-3">
+            <motion.div key={index} className="bg-background rounded-lg p-3" initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.1 + index * 0.05 }}>
               <div className="font-medium text-center mb-2">{day.date}</div>
               <div className="space-y-1">
                 {day.meals.length === 0 ? (
@@ -181,15 +206,15 @@ export default function DashboardPage() {
                   Add Meal
                 </Button>
               )}
-            </div>
+            </motion.div>
           ))}
         </div>
-      </div>
+      </motion.div>
 
       {/* Goals & Progress */}
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
         {/* Current Goals */}
-        <div className="bg-muted rounded-lg p-6">
+        <motion.div className="bg-muted rounded-lg p-6" initial={{ opacity: 0, y: 40 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.7, delay: 0.15 }}>
           <div className="flex justify-between items-center mb-4">
             <h2 className="text-xl font-semibold">Your Goals</h2>
             <Button variant="outline" size="sm">Edit Goals</Button>
@@ -208,10 +233,10 @@ export default function DashboardPage() {
               <span className="text-muted-foreground">{dashboardData.goals.weightGoal}</span>
             </div>
           </div>
-        </div>
+        </motion.div>
 
         {/* Recent Activity */}
-        <div className="bg-muted rounded-lg p-6">
+        <motion.div className="bg-muted rounded-lg p-6" initial={{ opacity: 0, y: 40 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.7, delay: 0.2 }}>
           <h2 className="text-xl font-semibold mb-4">Recent Activity</h2>
           <div className="space-y-3">
             {dashboardData.recentActivity.map((activity, index) => (
@@ -227,37 +252,45 @@ export default function DashboardPage() {
               </div>
             ))}
           </div>
-        </div>
+        </motion.div>
       </div>
 
       {/* Quick Actions */}
-      <div className="bg-muted rounded-lg p-6">
+      <motion.div className="bg-muted rounded-lg p-6" initial={{ opacity: 0, y: 40 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.7, delay: 0.25 }}>
         <h2 className="text-xl font-semibold mb-4">Quick Actions</h2>
         <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
-          <Link href="/meals">
+          <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.97 }}>
+            <Link href="/meals">
+              <Button variant="outline" className="w-full h-20 flex flex-col gap-2">
+                <span className="text-2xl">🍽️</span>
+                <span>Add Meal</span>
+              </Button>
+            </Link>
+          </motion.div>
+          <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.97 }}>
+            <Link href="/recipes">
+              <Button variant="outline" className="w-full h-20 flex flex-col gap-2">
+                <span className="text-2xl">📝</span>
+                <span>Create Recipe</span>
+              </Button>
+            </Link>
+          </motion.div>
+          <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.97 }}>
+            <Link href="/food">
+              <Button variant="outline" className="w-full h-20 flex flex-col gap-2">
+                <span className="text-2xl">🔍</span>
+                <span>Search Foods</span>
+              </Button>
+            </Link>
+          </motion.div>
+          <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.97 }}>
             <Button variant="outline" className="w-full h-20 flex flex-col gap-2">
-              <span className="text-2xl">🍽️</span>
-              <span>Add Meal</span>
+              <span className="text-2xl">📊</span>
+              <span>View Reports</span>
             </Button>
-          </Link>
-          <Link href="/recipes">
-            <Button variant="outline" className="w-full h-20 flex flex-col gap-2">
-              <span className="text-2xl">📝</span>
-              <span>Create Recipe</span>
-            </Button>
-          </Link>
-          <Link href="/food">
-            <Button variant="outline" className="w-full h-20 flex flex-col gap-2">
-              <span className="text-2xl">🔍</span>
-              <span>Search Foods</span>
-            </Button>
-          </Link>
-          <Button variant="outline" className="w-full h-20 flex flex-col gap-2">
-            <span className="text-2xl">📊</span>
-            <span>View Reports</span>
-          </Button>
+          </motion.div>
         </div>
-      </div>
+      </motion.div>
 
       {/* Printable Options */}
       <div className="bg-muted rounded-lg p-6">
@@ -266,6 +299,13 @@ export default function DashboardPage() {
           <Button variant="outline">📄 Print Weekly Meal Plan</Button>
           <Button variant="outline">🛒 Print Shopping List</Button>
           <Button variant="outline">📈 Print Nutrition Summary</Button>
+        </div>
+      </div>
+      {/* Motivational Quote */}
+      <div className="relative h-32 w-full rounded-xl overflow-hidden mt-8 flex items-center justify-center">
+        <Image src="https://images.unsplash.com/photo-1465101046530-73398c7f28ca?auto=format&fit=crop&w=800&q=80" alt="Motivation" fill />
+        <div className="absolute inset-0 bg-black/40 flex items-center justify-center">
+          <span className="text-white text-xl font-semibold drop-shadow-lg text-center px-4">{randomQuote}</span>
         </div>
       </div>
     </main>
