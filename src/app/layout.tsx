@@ -25,11 +25,24 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
       <body>
         <ClientProviders>
           <nav className="w-full flex items-center justify-center gap-6 py-4 border-b bg-background">
-            <Link href="/dashboard" className="font-semibold">Dashboard</Link>
-            <Link href="/meals">Meals</Link>
-            <Link href="/health">Health</Link>
-            <Link href="/recipes">Recipes</Link>
-            <Link href="/food">Food</Link>
+            <Link href="/dashboard" className="hover:text-primary transition-colors">
+              Dashboard
+            </Link>
+            <Link href="/meals" className="hover:text-primary transition-colors">
+              Meals
+            </Link>
+            <Link href="/food" className="hover:text-primary transition-colors">
+              Food
+            </Link>
+            <Link href="/recipes" className="hover:text-primary transition-colors">
+              Recipes
+            </Link>
+            <Link href="/health" className="hover:text-primary transition-colors">
+              Health
+            </Link>
+            <Link href="/chat" className="hover:text-primary transition-colors">
+              AI Assistant
+            </Link>
             <Link href="/profile">Profile</Link>
           </nav>
           {children}
