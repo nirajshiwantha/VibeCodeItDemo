@@ -290,19 +290,19 @@ export default function RecipesPage() {
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
           <div className="bg-background p-4 rounded-lg">
             <h4 className="font-medium mb-2">Protein Pancakes</h4>
-            <p className="text-sm text-muted-foreground mb-2">Breakfast • 2 servings</p>
+            <p className="text-sm text-muted-foreground mb-2">Breakfast &bull; 2 servings</p>
             <div className="text-xs text-muted-foreground mb-3">320 cal | 25g protein per serving</div>
             <Button size="sm" variant="outline">Add to Collection</Button>
           </div>
           <div className="bg-background p-4 rounded-lg">
             <h4 className="font-medium mb-2">Chicken Stir Fry</h4>
-            <p className="text-sm text-muted-foreground mb-2">Dinner • 4 servings</p>
+            <p className="text-sm text-muted-foreground mb-2">Dinner &bull; 4 servings</p>
             <div className="text-xs text-muted-foreground mb-3">380 cal | 35g protein per serving</div>
             <Button size="sm" variant="outline">Add to Collection</Button>
           </div>
           <div className="bg-background p-4 rounded-lg">
             <h4 className="font-medium mb-2">Greek Salad</h4>
-            <p className="text-sm text-muted-foreground mb-2">Lunch • 2 servings</p>
+            <p className="text-sm text-muted-foreground mb-2">Lunch &bull; 2 servings</p>
             <div className="text-xs text-muted-foreground mb-3">250 cal | 12g protein per serving</div>
             <Button size="sm" variant="outline">Add to Collection</Button>
           </div>

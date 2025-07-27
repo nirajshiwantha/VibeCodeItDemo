@@ -302,7 +302,7 @@ function MoodSection() {
   const chartData = logs.map(l => l.mood).reverse()
   return (
     <div className="bg-muted rounded-lg p-6">
-      <h2 className="text-xl font-semibold mb-4">Mood & Energy</h2>
+      <h2 className="text-xl font-semibold mb-4">Mood &amp; Energy</h2>
       <div className="flex gap-2 mb-4">
         <Input type="number" placeholder="Mood (1-10)" value={mood} onChange={e => setMood(e.target.value)} min={1} max={10} />
         <Input type="number" placeholder="Energy (1-10)" value={energy} onChange={e => setEnergy(e.target.value)} min={1} max={10} />
