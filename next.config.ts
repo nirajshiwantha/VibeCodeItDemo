@@ -4,4 +4,8 @@ const nextConfig: NextConfig = {
   /* config options here */
 };
 
-export default nextConfig;
+export default {
+  images: {
+    domains: ["lh3.googleusercontent.com"],
+  },
+}
