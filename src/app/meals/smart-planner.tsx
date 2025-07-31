@@ -2,6 +2,7 @@
 import { useState } from "react"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
+import AuthGuard from "@/components/auth-guard"
 
 const TABS = [
   { key: "ai", label: "AI Suggestions" },
@@ -14,25 +15,27 @@ const TABS = [
 export default function SmartPlannerPage() {
   const [tab, setTab] = useState("ai")
   return (
-    <main className="max-w-4xl mx-auto py-12 px-4 flex flex-col gap-8">
-      <h1 className="text-2xl font-bold mb-4">Smart Meal Planning</h1>
-      <div className="flex gap-2 mb-6">
-        {TABS.map(t => (
-          <Button
-            key={t.key}
-            variant={tab === t.key ? "default" : "outline"}
-            onClick={() => setTab(t.key)}
-          >
-            {t.label}
-          </Button>
-        ))}
-      </div>
-      {tab === "ai" && <AISuggestionsSection />}
-      {tab === "auto" && <AutoMealPlanSection />}
-      {tab === "shopping" && <ShoppingListSection />}
-      {tab === "pantry" && <PantrySection />}
-      {tab === "analytics" && <AnalyticsSection />}
-    </main>
+    <AuthGuard>
+      <main className="max-w-4xl mx-auto py-12 px-4 flex flex-col gap-8">
+        <h1 className="text-2xl font-bold mb-4">Smart Meal Planning</h1>
+        <div className="flex gap-2 mb-6">
+          {TABS.map(t => (
+            <Button
+              key={t.key}
+              variant={tab === t.key ? "default" : "outline"}
+              onClick={() => setTab(t.key)}
+            >
+              {t.label}
+            </Button>
+          ))}
+        </div>
+        {tab === "ai" && <AISuggestionsSection />}
+        {tab === "auto" && <AutoMealPlanSection />}
+        {tab === "shopping" && <ShoppingListSection />}
+        {tab === "pantry" && <PantrySection />}
+        {tab === "analytics" && <AnalyticsSection />}
+      </main>
+    </AuthGuard>
   )
 }
 

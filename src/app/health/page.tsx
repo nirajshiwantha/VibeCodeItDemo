@@ -4,6 +4,7 @@ import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import * as actions from "./actions"
 import { HealthChart } from "@/components/ui/HealthChart"
+import AuthGuard from "@/components/auth-guard"
 
 const TABS = [
   { key: "weight", label: "Weight" },
@@ -17,26 +18,28 @@ const TABS = [
 export default function HealthPage() {
   const [tab, setTab] = useState("weight")
   return (
-    <main className="max-w-4xl mx-auto py-12 px-4 flex flex-col gap-8">
-      <h1 className="text-2xl font-bold mb-4">Health Tracking</h1>
-      <div className="flex gap-2 mb-6">
-        {TABS.map(t => (
-          <Button
-            key={t.key}
-            variant={tab === t.key ? "default" : "outline"}
-            onClick={() => setTab(t.key)}
-          >
-            {t.label}
-          </Button>
-        ))}
-      </div>
-      {tab === "weight" && <WeightSection />}
-      {tab === "measurements" && <MeasurementsSection />}
-      {tab === "water" && <WaterSection />}
-      {tab === "sleep" && <SleepSection />}
-      {tab === "mood" && <MoodSection />}
-      {tab === "custom" && <CustomMetricsSection />}
-    </main>
+    <AuthGuard>
+      <main className="max-w-4xl mx-auto py-12 px-4 flex flex-col gap-8">
+        <h1 className="text-2xl font-bold mb-4">Health Tracking</h1>
+        <div className="flex gap-2 mb-6">
+          {TABS.map(t => (
+            <Button
+              key={t.key}
+              variant={tab === t.key ? "default" : "outline"}
+              onClick={() => setTab(t.key)}
+            >
+              {t.label}
+            </Button>
+          ))}
+        </div>
+        {tab === "weight" && <WeightSection />}
+        {tab === "measurements" && <MeasurementsSection />}
+        {tab === "water" && <WaterSection />}
+        {tab === "sleep" && <SleepSection />}
+        {tab === "mood" && <MoodSection />}
+        {tab === "custom" && <CustomMetricsSection />}
+      </main>
+    </AuthGuard>
   )
 }
 
