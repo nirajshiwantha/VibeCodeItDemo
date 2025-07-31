@@ -4,7 +4,6 @@ import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { useState, useEffect, useTransition } from "react"
 import { getUserProfile, updateUserProfile } from "./actions"
-import Image from "next/image"
 import { getUserOpenAiKey, updateUserOpenAiKey } from "./actions"
 import { motion, AnimatePresence } from "framer-motion"
 
@@ -20,7 +19,6 @@ interface UserProfile {
   activityLevel: string | null
 }
 
-const UNSPLASH_BANNER = "https://images.unsplash.com/photo-1506744038136-46273834b3fb?auto=format&fit=crop&w=1200&q=80"
 const MOTIVATION_QUOTES = [
   "Every healthy choice is a victory.",
   "Small steps every day lead to big results.",
@@ -130,13 +128,20 @@ export default function ProfilePage() {
 
   return (
     <main className="max-w-4xl mx-auto py-12 px-4 flex flex-col gap-8">
-      {/* Unsplash Banner */}
-      <div className="relative h-48 w-full rounded-xl overflow-hidden mb-8">
-        <Image src={UNSPLASH_BANNER} alt="Profile Banner" fill priority />
-        <div className="absolute inset-0 bg-black/30" />
-      </div>
+      {/* Clean Header */}
+      <motion.div 
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.6 }}
+        className="text-center mb-8"
+      >
+        <div className="bg-gradient-to-r from-purple-50 to-blue-50 rounded-2xl p-8 border border-gray-100">
+          <h1 className="text-4xl font-bold text-gray-800 mb-4">My Profile 👤</h1>
+          <p className="text-xl text-gray-600 italic">"{randomQuote}"</p>
+        </div>
+      </motion.div>
+
       <div className="flex justify-between items-center">
-        <h1 className="text-3xl font-bold">My Profile</h1>
         <motion.div whileHover={{ scale: 1.08 }} whileTap={{ scale: 0.95 }}>
           <Button 
             variant={isEditing ? "default" : "outline"} 
@@ -148,6 +153,7 @@ export default function ProfilePage() {
           </Button>
         </motion.div>
       </div>
+
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
         {/* Profile Card */}
         <motion.div
@@ -165,13 +171,12 @@ export default function ProfilePage() {
               whileHover={{ scale: 1.05 }}
             >
               {profile?.image ? (
-                <Image
+                <img
                   src={profile.image}
                   alt="Profile"
                   width={120}
                   height={120}
                   className="rounded-full mx-auto border-4 border-background shadow-lg transition-all duration-300 hover:shadow-2xl"
-                  priority
                 />
               ) : (
                 <div className="w-30 h-30 rounded-full bg-primary/10 flex items-center justify-center mx-auto">
@@ -409,13 +414,6 @@ export default function ProfilePage() {
           />
           <Button onClick={handleSaveOpenAiKey}>Save</Button>
           {openAiKeySaved && <span className="text-green-600 ml-2">Saved!</span>}
-        </div>
-      </div>
-      {/* Motivational Quote */}
-      <div className="relative h-32 w-full rounded-xl overflow-hidden mt-8 flex items-center justify-center">
-        <Image src="https://images.unsplash.com/photo-1465101046530-73398c7f28ca?auto=format&fit=crop&w=800&q=80" alt="Motivation" fill />
-        <div className="absolute inset-0 bg-black/40 flex items-center justify-center">
-          <span className="text-white text-xl font-semibold drop-shadow-lg text-center px-4">{randomQuote}</span>
         </div>
       </div>
     </main>

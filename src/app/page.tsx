@@ -1,30 +1,31 @@
 "use client"
-import { useSession, signIn, signOut } from "next-auth/react"
-import { Button } from "@/components/ui/button"
-import Link from "next/link"
+import { useSession } from "next-auth/react"
+import { useRouter } from "next/navigation"
+import { useEffect } from "react"
 
 export default function HomePage() {
   const { data: session, status } = useSession()
+  const router = useRouter()
 
-  if (status === "loading") {
-    return <div className="flex items-center justify-center h-screen">Loading...</div>
-  }
+  useEffect(() => {
+    if (status === "loading") return // Still loading
 
+    if (session) {
+      // User is signed in, redirect to dashboard
+      router.push("/dashboard")
+    } else {
+      // User is not signed in, redirect to custom sign-in page
+      router.push("/auth/signin")
+    }
+  }, [session, status, router])
+
+  // Show loading while redirecting
   return (
-    <main className="flex flex-col items-center justify-center min-h-screen gap-6">
-      <h1 className="text-4xl font-bold">NutriTrack Pro</h1>
-      <p className="text-lg text-gray-600">Plan meals, track health, and reach your goals.</p>
-      {session ? (
-        <div className="flex flex-col items-center gap-4">
-          <span>Welcome, {session.user?.name || session.user?.email}!</span>
-          <Button onClick={() => window.location.href = "/dashboard"}>Go to Dashboard</Button>
-          <Link href="/food"><Button variant="secondary">Food Database</Button></Link>
-          <Link href="/profile"><Button variant="secondary">Profile</Button></Link>
-          <Button variant="outline" onClick={() => signOut()}>Sign out</Button>
-        </div>
-      ) : (
-        <Button onClick={() => signIn("google")}>Sign in with Google</Button>
-      )}
-    </main>
+    <div className="min-h-screen flex items-center justify-center">
+      <div className="text-center">
+        <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary mx-auto mb-4"></div>
+        <p className="text-muted-foreground">Loading...</p>
+      </div>
+    </div>
   )
 }

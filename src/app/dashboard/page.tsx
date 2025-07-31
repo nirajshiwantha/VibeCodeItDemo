@@ -4,7 +4,6 @@ import { Button } from "@/components/ui/button"
 import Link from "next/link"
 import { useState } from "react"
 import { motion } from "framer-motion"
-import Image from "next/image"
 
 interface DashboardData {
   todayNutrition: {
@@ -34,13 +33,12 @@ interface DashboardData {
   }>
 }
 
-const UNSPLASH_HERO = "https://images.unsplash.com/photo-1519864600265-abb23847ef2c?auto=format&fit=crop&w=1200&q=80"
 const MOTIVATION_QUOTES = [
   "Consistency is the key to success.",
   "Fuel your body, fuel your life.",
   "Healthy habits, happy life.",
   "Progress, not perfection.",
-  "You are what you eat, so don’t be fast, cheap, easy, or fake."
+  "You are what you eat, so don't be fast, cheap, easy, or fake."
 ]
 const randomQuote = MOTIVATION_QUOTES[Math.floor(Math.random() * MOTIVATION_QUOTES.length)]
 
@@ -89,16 +87,23 @@ export default function DashboardPage() {
 
   return (
     <main className="max-w-6xl mx-auto py-12 px-4 flex flex-col gap-8">
-      {/* Unsplash Hero Banner */}
-      <div className="relative h-48 w-full rounded-xl overflow-hidden mb-8">
-        <Image src={UNSPLASH_HERO} alt="Dashboard Hero" fill priority />
-        <div className="absolute inset-0 bg-black/30" />
-      </div>
-      <div className="flex justify-between items-center">
-        <div>
-          <h1 className="text-3xl font-bold">Welcome back, {session.user?.name?.split(' ')[0] || 'User'}!</h1>
-          <p className="text-muted-foreground">Here's your nutrition overview for today</p>
+      {/* Clean Header */}
+      <motion.div 
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.6 }}
+        className="text-center mb-8"
+      >
+        <div className="bg-gradient-to-r from-blue-50 to-green-50 rounded-2xl p-8 border border-gray-100">
+          <h1 className="text-4xl font-bold text-gray-800 mb-4">
+            Welcome back, {session.user?.name?.split(' ')[0] || 'User'}! 🌟
+          </h1>
+          <p className="text-xl text-gray-600 italic mb-4">"{randomQuote}"</p>
+          <p className="text-gray-600">Here's your nutrition overview for today</p>
         </div>
+      </motion.div>
+
+      <div className="flex justify-between items-center">
         <div className="flex gap-2">
           <Link href="/meals"><Button>Plan Meals</Button></Link>
           <Link href="/food"><Button variant="outline">Add Food</Button></Link>
@@ -120,11 +125,10 @@ export default function DashboardPage() {
             <div className="w-full bg-muted rounded-full h-2 mb-2">
               <motion.div
                 className="bg-primary h-2 rounded-full"
-                style={{ width: `${Math.min(calorieProgress, 100)}%` }}
+                style={{ width: `${Math.min(calorieProgress, 100)}%`, originX: 0 }}
                 initial={{ scaleX: 0 }}
                 animate={{ scaleX: 1 }}
                 transition={{ duration: 0.7 }}
-                style={{ originX: 0 }}
               />
             </div>
             <div className="text-2xl font-bold">{dashboardData.todayNutrition.calories}</div>
@@ -144,11 +148,10 @@ export default function DashboardPage() {
             <div className="w-full bg-muted rounded-full h-2 mb-2">
               <motion.div
                 className="bg-green-500 h-2 rounded-full"
-                style={{ width: `${Math.min(proteinProgress, 100)}%` }}
+                style={{ width: `${Math.min(proteinProgress, 100)}%`, originX: 0 }}
                 initial={{ scaleX: 0 }}
                 animate={{ scaleX: 1 }}
                 transition={{ duration: 0.7 }}
-                style={{ originX: 0 }}
               />
             </div>
             <div className="text-2xl font-bold">{dashboardData.todayNutrition.protein}g</div>
@@ -299,13 +302,6 @@ export default function DashboardPage() {
           <Button variant="outline">📄 Print Weekly Meal Plan</Button>
           <Button variant="outline">🛒 Print Shopping List</Button>
           <Button variant="outline">📈 Print Nutrition Summary</Button>
-        </div>
-      </div>
-      {/* Motivational Quote */}
-      <div className="relative h-32 w-full rounded-xl overflow-hidden mt-8 flex items-center justify-center">
-        <Image src="https://images.unsplash.com/photo-1465101046530-73398c7f28ca?auto=format&fit=crop&w=800&q=80" alt="Motivation" fill />
-        <div className="absolute inset-0 bg-black/40 flex items-center justify-center">
-          <span className="text-white text-xl font-semibold drop-shadow-lg text-center px-4">{randomQuote}</span>
         </div>
       </div>
     </main>
